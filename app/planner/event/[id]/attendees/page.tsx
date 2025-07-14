@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Loader2, Download, Copy, CheckCircle, Search, X, Trash2 } from "lucide-react";
+import { Loader2, Download, Copy, CheckCircle, Search, X } from "lucide-react";
 import Papa from "papaparse";
 import { saveAs } from "file-saver";
 import { useToast } from "@/hooks/use-toast";
@@ -16,7 +16,14 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 export default function AttendeesPage() {
   const params = useParams();
   const eventId = params?.id as string;
-  const [attendees, setAttendees] = useState<any[]>([]);
+  const [attendees, setAttendees] = useState<Array<{
+    id: string;
+    barcode_code: string;
+    has_checked_in: boolean;
+    user_id: string;
+    full_name: string;
+    email: string;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "checkedin">("all");
   const [manualCheckInCode, setManualCheckInCode] = useState('');

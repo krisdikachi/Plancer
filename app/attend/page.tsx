@@ -12,17 +12,17 @@ import Navbar from "@/components/Navbar";
 
 export default function AttendPage() {
   const router = useRouter();
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Array<Record<string, any>>>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string } | null>(null);
   const [searchCode, setSearchCode] = useState('');
   const [searching, setSearching] = useState(false);
-  const [searchedEvent, setSearchedEvent] = useState<any>(null);
+  const [searchedEvent, setSearchedEvent] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      setUser(user ? { id: user.id } : null);
     };
     getUser();
   }, []);
