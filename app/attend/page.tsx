@@ -9,6 +9,14 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Calendar, Clock, MapPin, Users, Plus, Loader2, Search, X } from 'lucide-react';
 import Navbar from "@/components/Navbar";
+import { TooltipProps } from 'recharts';
+
+const CustomTooltip = (props: any) => {
+  if (props.active && props.payload && props.payload.length) {
+    // ...
+  }
+  return null;
+};
 
 export default function AttendPage() {
   const router = useRouter();
