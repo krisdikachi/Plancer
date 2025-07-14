@@ -1,0 +1,113 @@
+{
+  "name": "Plancer - Plan Your Tomorrow Today",
+  "short_name": "Plancer",
+  "description": "Smart event planning platform for creating, managing, and attending events with QR code check-ins and real-time analytics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10B981",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "productivity", "events"],
+  "icons": [
+    {
+      "src": "/plancer2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/plancer2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/imgg.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/plancer.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/plancer-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/plancer2.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/plancer2.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Plancer Desktop Dashboard"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Plancer Mobile App"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Create Event",
+      "short_name": "New Event",
+      "description": "Create a new event",
+      "url": "/planner/event-creation",
+      "icons": [
+        {
+          "src": "/icon-create-event.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Browse Events",
+      "short_name": "Events",
+      "description": "Browse available events",
+      "url": "/attend",
+      "icons": [
+        {
+          "src": "/icon-browse-events.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Scanner",
+      "short_name": "Scan",
+      "description": "Scan QR codes for check-in",
+      "url": "/planner/scanner",
+      "icons": [
+        {
+          "src": "/icon-scanner.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+} 

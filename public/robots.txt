@@ -1,0 +1,44 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://plancer.veercel.app/sitemap.xml
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /_next/
+Disallow: /static/
+
+# Allow important pages
+Allow: /planner/
+Allow: /attend/
+Allow: /signup/
+Allow: /about/
+Allow: /features/
+Allow: /pricing/
+Allow: /contact/
+Allow: /help/
+
+# Crawl delay (optional)
+Crawl-delay: 1 
