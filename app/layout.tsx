@@ -4,6 +4,7 @@ import "./globals.css";
 import OneSignalProvider from "./OneSignalProvider";
 import { Toaster } from "@/components/ui/toaster";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     images: ["/plancer.png"],
   },
 };
-
+import { Analytics } from "@vercel/analytics/next"
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -173,6 +174,7 @@ export default function RootLayout({
           {children}
         </OneSignalProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );

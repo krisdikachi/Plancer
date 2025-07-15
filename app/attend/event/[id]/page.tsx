@@ -134,7 +134,22 @@ export default function EventJoinPage() {
 
       const uniqueCode = uuidv4();
       
-      // Insert into event_attendees table (consistent with planner dashboard)
+      // First, create/update user profile to ensure foreign key constraint is satisfied
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: fullName,
+          email: email,
+        });
+
+      if (profileError) {
+        setError('Failed to update profile: ' + profileError.message);
+        setSubmitting(false);
+        return;
+      }
+      
+      // Then insert into event_attendees table (consistent with planner dashboard)
       const { error } = await supabase.from('event_attendees').insert({
         event_id: eventId,
         user_id: user.id,
@@ -145,15 +160,6 @@ export default function EventJoinPage() {
       if (error) {
         setError(error.message);
       } else {
-        // Update user profile with the provided information
-        await supabase
-          .from('profiles')
-          .upsert({
-            id: user.id,
-            full_name: fullName,
-            email: email,
-          });
-
         setBarcode(uniqueCode);
         setSubmitted(true);
       }
