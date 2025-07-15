@@ -25,32 +25,42 @@ import { Button } from "@/components/ui/button";
 const LandingPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        // User is authenticated, redirect to appropriate dashboard
+        setUser(session.user);
+        // Fetch user role from profiles table
         const { data: profile } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", session.user.id)
           .single();
-        
-        if (profile?.role === "planner") {
-          router.push("/planner");
-        } else {
-          router.push("/attend");
+        if (profile?.role) {
+          setUserRole(profile.role);
         }
       }
     };
-
     checkAuth();
-  }, [router]);
+  }, []);
 
-  const handleNavigate = (role: "planner" | "attend") => {
+  const handleNavigate = async (role: "planner" | "attend") => {
     setLoading(true);
-    // Go to login page with query ?role=planner or ?role=attendee
+    if (user && userRole) {
+      // If user is authenticated and role matches, go to dashboard
+      if (userRole === role) {
+        router.push(role === "planner" ? "/planner" : "/attend");
+        return;
+      }
+      // If user is authenticated but role does not match, switch role and go to dashboard
+      await supabase.from("profiles").update({ role }).eq("id", user.id);
+      router.push(role === "planner" ? "/planner" : "/attend");
+      return;
+    }
+    // If not authenticated, go to login page with role param
     router.push(`/login?role=${role}`);
   };
   
