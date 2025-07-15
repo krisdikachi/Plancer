@@ -141,7 +141,7 @@ export default function EventJoinPage() {
           id: user.id,
           full_name: fullName,
           email: email,
-          role: 'attend',
+          role: 'attendee', // <-- must match your DB constraint
         });
 
       if (profileError) {
