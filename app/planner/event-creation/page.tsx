@@ -150,7 +150,7 @@ export default function EventCreation() {
           id: user.id,
           full_name: userName,
           email: user.email,
-          role: 'planner',
+          role: 'planner', // enforce allowed value
         });
 
         if (profileError) {

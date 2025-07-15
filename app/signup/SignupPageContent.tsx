@@ -71,7 +71,7 @@ export default function SignupPageContent() {
             id: user.id,
             full_name: userName,
             email: user.email,
-            role: role,
+            role: role === 'planner' ? 'planner' : 'attend', // enforce allowed value
           });
 
           if (!error) {

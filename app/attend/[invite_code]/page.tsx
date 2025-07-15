@@ -85,7 +85,7 @@ export default function AttendByInviteCode() {
           id: user.id,
           full_name: fullName,
           email: email,
-          role: 'attend',
+          role: 'attend', // enforce allowed value
         });
 
         if (profileError) {
