@@ -55,9 +55,21 @@ export default function SignupPageContent() {
           .single();
 
         if (!existingProfile) {
+          // Get user name from Google OAuth user metadata if available
+          let userName = fullName;
+          if (user.user_metadata?.full_name) {
+            userName = user.user_metadata.full_name;
+          } else if (user.user_metadata?.name) {
+            userName = user.user_metadata.name;
+          } else if (user.user_metadata?.email) {
+            // Use email as fallback if no name is available
+            userName = user.user_metadata.email.split('@')[0];
+          }
+
           const { error } = await supabase.from("profiles").insert({
             id: user.id,
-            full_name: fullName,
+            full_name: userName,
+            email: user.email,
             role: role,
           });
 

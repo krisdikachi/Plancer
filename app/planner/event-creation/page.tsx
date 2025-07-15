@@ -134,6 +134,36 @@ export default function EventCreation() {
       if (userError || !user?.id) throw new Error("Not logged in");
 
       const creatorId = user.id;
+      
+      // Ensure user profile exists before creating event
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!existingProfile) {
+        // Create profile if it doesn't exist
+        let userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+        
+        const { error: profileError } = await supabase.from("profiles").insert({
+          id: user.id,
+          full_name: userName,
+          email: user.email,
+          role: 'planner',
+        });
+
+        if (profileError) {
+          toast({
+            title: "Error",
+            description: "Failed to create user profile. Please try again.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       const code = nanoid(8);
       setInviteCode(code);
 
