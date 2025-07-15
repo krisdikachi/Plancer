@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, QrCode, Users, CheckCircle } from 'lucide-react';
+import Navbar from "@/components/Navbar";
 
 export default function ScannerPageContent() {
   const searchParams = useSearchParams();
@@ -35,20 +36,21 @@ export default function ScannerPageContent() {
           console.log('QR code scanned:', decodedText); // Debug log
           const code = decodedText.trim();
 
+          // Use event_attendees table and filter by eventId and barcode_code
           const { data, error } = await supabase
-            .from('attendees')
+            .from('event_attendees')
             .update({ has_checked_in: true })
             .eq('barcode_code', code)
+            .eq('event_id', eventId)
             .select();
 
-          if (!error && data.length > 0) {
+          if (!error && data && data.length > 0) {
             setScannedCount(prev => prev + 1);
             alert(`✅ ${data[0].full_name || 'Attendee'} checked in successfully!`);
           } else {
             alert('❌ Invalid or already checked-in code');
           }
-
-          scanner.clear();
+          // Do NOT clear the scanner, so it stays active for more scans
         },
         (error) => {
           console.warn('Scanner error:', error);
@@ -122,31 +124,16 @@ export default function ScannerPageContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={() => router.push("/planner/")}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Button>
-            <div className="flex items-center gap-2">
-              <QrCode className="w-5 h-5 text-blue-600" />
-              <h1 className="text-xl font-semibold text-gray-900">QR Scanner</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <CheckCircle className="w-4 h-4 text-green-500" />
-            <span>{scannedCount} checked in</span>
-          </div>
+      {/* Responsive Navbar */}
+      <Navbar currentRole="planner" />
+      {/* Checked-in Census (moved out of header) */}
+      <div className="max-w-4xl mx-auto px-4 pt-6 pb-2">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <CheckCircle className="w-4 h-4 text-green-500" />
+          <span>{scannedCount} checked in</span>
         </div>
       </div>
-
+      {/* Scanner and Event Info */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-6">
           {/* Scanner */}
