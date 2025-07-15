@@ -141,6 +141,7 @@ export default function EventJoinPage() {
           id: user.id,
           full_name: fullName,
           email: email,
+          role: 'attend',
         });
 
       if (profileError) {
