@@ -120,15 +120,27 @@ function ChartTooltipContent({
   color,
   nameKey,
   labelKey,
-}: Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, 'payload'> &
-  React.ComponentProps<"div"> & {
-    payload?: ChartTooltipPayload[];
-    hideLabel?: boolean;
-    hideIndicator?: boolean;
-    indicator?: "line" | "dot" | "dashed";
-    nameKey?: string;
-    labelKey?: string;
-  }) {
+}: {
+  active?: boolean;
+  payload?: ChartTooltipPayload[];
+  className?: string;
+  indicator?: "line" | "dot" | "dashed";
+  hideLabel?: boolean;
+  hideIndicator?: boolean;
+  label?: React.ReactNode;
+  labelFormatter?: (label: React.ReactNode, payload?: ChartTooltipPayload[]) => React.ReactNode;
+  labelClassName?: string;
+  formatter?: (
+    value: number | string,
+    name: string,
+    item: ChartTooltipPayload,
+    index: number,
+    payload: any
+  ) => React.ReactNode;
+  color?: string;
+  nameKey?: string;
+  labelKey?: string;
+}) {
   const { config } = useChart()
 
   const tooltipLabel = React.useMemo(() => {
@@ -189,7 +201,7 @@ function ChartTooltipContent({
 
           return (
             <div
-              key={item.dataKey}
+              key={typeof item.dataKey === "string" || typeof item.dataKey === "number" ? item.dataKey : index}
               className={cn(
                 "[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5",
                 indicator === "dot" && "items-center"
