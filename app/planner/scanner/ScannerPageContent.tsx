@@ -15,8 +15,50 @@ export default function ScannerPageContent() {
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [scannedCount, setScannedCount] = useState(0);
+  const [scannerInitialized, setScannerInitialized] = useState(false);
 
   console.log('Scanner page - eventId:', eventId); // Debug log
+
+  // Function to initialize the scanner
+  const initializeScanner = () => {
+    if (scannerInitialized) return;
+    setScannerInitialized(true);
+    try {
+      const scanner = new Html5QrcodeScanner(
+        'reader',
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        false
+      );
+
+      scanner.render(
+        async (decodedText) => {
+          console.log('QR code scanned:', decodedText); // Debug log
+          const code = decodedText.trim();
+
+          const { data, error } = await supabase
+            .from('attendees')
+            .update({ has_checked_in: true })
+            .eq('barcode_code', code)
+            .select();
+
+          if (!error && data.length > 0) {
+            setScannedCount(prev => prev + 1);
+            alert(`✅ ${data[0].full_name || 'Attendee'} checked in successfully!`);
+          } else {
+            alert('❌ Invalid or already checked-in code');
+          }
+
+          scanner.clear();
+        },
+        (error) => {
+          console.warn('Scanner error:', error);
+        }
+      );
+    } catch (err) {
+      console.error('Error initializing scanner:', err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -62,46 +104,8 @@ export default function ScannerPageContent() {
     setLoading(false);
     return;
     
-    try {
-      const scanner = new Html5QrcodeScanner(
-        'reader',
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        false
-      );
-
-      scanner.render(
-        async (decodedText) => {
-          console.log('QR code scanned:', decodedText); // Debug log
-          const code = decodedText.trim();
-
-          const { data, error } = await supabase
-            .from('attendees')
-            .update({ has_checked_in: true })
-            .eq('barcode_code', code)
-            .select();
-
-          if (!error && data.length > 0) {
-            setScannedCount(prev => prev + 1);
-            alert(`✅ ${data[0].full_name || 'Attendee'} checked in successfully!`);
-          } else {
-            alert('❌ Invalid or already checked-in code');
-          }
-
-          scanner.clear();
-        },
-        (error) => {
-          console.warn('Scanner error:', error);
-        }
-      );
-
-      return () => {
-        console.log('Cleaning up scanner...'); // Debug log
-        scanner.clear();
-      };
-    } catch (err) {
-      console.error('Error initializing scanner:', err);
-      setLoading(false);
-    }
+    // The scanner initialization is now handled by the initializeScanner function
+    // and the button click.
   }, []);
 
   if (loading) {
@@ -153,12 +157,10 @@ export default function ScannerPageContent() {
                   <h2 className="text-lg font-semibold text-gray-800 mb-2">Scan Attendee QR Code</h2>
                   <p className="text-sm text-gray-600">Position the QR code within the scanner frame</p>
                   <Button 
-                    onClick={() => {
-                      console.log('Manual scanner init...');
-                      // Re-enable scanner here
-                    }}
+                    onClick={initializeScanner}
                     className="mt-4"
                     variant="outline"
+                    disabled={scannerInitialized}
                   >
                     Initialize Scanner
                   </Button>
