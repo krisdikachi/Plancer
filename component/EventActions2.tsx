@@ -21,7 +21,7 @@ export function EventActions2({ event, eventUrl }: EventActionsProps) {
   const [showQR, setShowQR] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const shareText = `Join my event "${event.title}"! Use invite code: ${event.invite_code}\n${eventUrl}`;
+  const shareText = `Join my event "${event.title}"!\n${eventUrl}`;
 
   const shareToWhatsApp = () => {
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;

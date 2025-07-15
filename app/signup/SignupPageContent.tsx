@@ -10,6 +10,7 @@ export default function SignupPageContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [role, setRole] = useState(params?.get("role") === "planner" ? "planner" : "attend");
+  const [eventCode, setEventCode] = useState(params?.get("event") || "");
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -81,7 +82,12 @@ export default function SignupPageContent() {
               variant: "success",
             });
             setTimeout(() => {
-              router.push(role === "planner" ? "/planner" : "/attend");
+              // If there's an event code, redirect to that event, otherwise to dashboard
+              if (eventCode) {
+                router.push(`/attend/${eventCode}`);
+              } else {
+                router.push(role === "planner" ? "/planner" : "/attend");
+              }
             }, 1500);
           } else {
             toast({
@@ -91,7 +97,12 @@ export default function SignupPageContent() {
             });
           }
         } else {
-          router.push(role === "planner" ? "/planner" : "/attend");
+          // If there's an event code, redirect to that event, otherwise to dashboard
+          if (eventCode) {
+            router.push(`/attend/${eventCode}`);
+          } else {
+            router.push(role === "planner" ? "/planner" : "/attend");
+          }
         }
       }
     };
@@ -126,10 +137,14 @@ export default function SignupPageContent() {
 
   const handleGoogleLogin = async () => {
     try {
+      const redirectUrl = eventCode 
+        ? `https://plancer.vercel.app/signup?role=${role}&event=${eventCode}`
+        : `https://plancer.vercel.app/signup?role=${role}`;
+        
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `https://plancer.vercel.app/signup?role=${role}`,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

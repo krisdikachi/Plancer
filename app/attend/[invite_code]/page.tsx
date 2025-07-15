@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, CheckCircle, Calendar, MapPin, Clock } from 'lucide-react';
+import { Loader2, CheckCircle, Calendar, MapPin, Clock, LogIn } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -22,12 +22,20 @@ export default function AttendByInviteCode() {
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
   const [barcodeCode, setBarcodeCode] = useState('');
   const [error, setError] = useState('');
+  const [user, setUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    const checkAuthAndFetchEvent = async () => {
       if (!invite_code) return;
 
       try {
+        // First check if user is authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        setCheckingAuth(false);
+
+        // Fetch event data
         const { data, error } = await supabase
           .from('events')
           .select('*')
@@ -48,24 +56,66 @@ export default function AttendByInviteCode() {
       }
     };
 
-    fetchEvent();
+    checkAuthAndFetchEvent();
   }, [invite_code]);
 
   const handleRSVP = async () => {
+    if (!user) {
+      // Redirect to signup with event info
+      router.push(`/signup?role=attend&event=${invite_code}`);
+      return;
+    }
+
     if (!email || !fullName || !event) return;
 
     setSubmitting(true);
     setError('');
 
     try {
+      // First, ensure user profile exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!existingProfile) {
+        // Create profile if it doesn't exist
+        const { error: profileError } = await supabase.from('profiles').insert({
+          id: user.id,
+          full_name: fullName,
+          email: email,
+          role: 'attend',
+        });
+
+        if (profileError) {
+          setError('Failed to create user profile. Please try again.');
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      // Check if user already registered for this event
+      const { data: existingRegistration } = await supabase
+        .from('event_attendees')
+        .select('id')
+        .eq('event_id', event.id)
+        .eq('user_id', user.id)
+        .single();
+
+      if (existingRegistration) {
+        setError('You are already registered for this event');
+        setSubmitting(false);
+        return;
+      }
+
       const uniqueBarcode = uuidv4();
       
       const { error: insertError } = await supabase
-        .from('attendees')
+        .from('event_attendees')
         .insert({
           event_id: event.id,
-          email: email,
-          full_name: fullName,
+          user_id: user.id,
           barcode_code: uniqueBarcode,
           has_checked_in: false,
         });
@@ -85,7 +135,7 @@ export default function AttendByInviteCode() {
     }
   };
 
-  if (loading) {
+  if (loading || checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="animate-spin w-6 h-6 text-gray-500" />
@@ -190,37 +240,70 @@ export default function AttendByInviteCode() {
             )}
           </div>
 
-          {/* RSVP Form */}
-          <div className="space-y-3">
-            <Input
-              type="text"
-              placeholder="Your Full Name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-            <Input
-              type="email"
-              placeholder="Your Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Button 
-              onClick={handleRSVP}
-              disabled={!email || !fullName || submitting}
-              className="w-full bg-emerald-600 hover:bg-emerald-700"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Confirming RSVP...
-                </>
-              ) : (
-                'Confirm RSVP'
-              )}
-            </Button>
-          </div>
+          {!user ? (
+            /* Not authenticated - show signup prompt */
+            <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <LogIn className="w-5 h-5 text-blue-600" />
+                  <h3 className="font-semibold text-blue-800">Sign up to join this event</h3>
+                </div>
+                <p className="text-sm text-blue-700 mb-4">
+                  Create an account to register for this event and get your QR code for check-in.
+                </p>
+                <Button 
+                  onClick={() => router.push(`/signup?role=attend&event=${invite_code}`)}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign Up to Join Event
+                </Button>
+              </div>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 mb-2">Already have an account?</p>
+                <Button 
+                  onClick={() => router.push(`/login?redirect=/attend/${invite_code}`)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Sign In
+                </Button>
+              </div>
+            </div>
+          ) : (
+            /* Authenticated - show RSVP form */
+            <div className="space-y-3">
+              <Input
+                type="text"
+                placeholder="Your Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+              <Input
+                type="email"
+                placeholder="Your Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <Button 
+                onClick={handleRSVP}
+                disabled={!email || !fullName || submitting}
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Confirming RSVP...
+                  </>
+                ) : (
+                  'Confirm RSVP'
+                )}
+              </Button>
+            </div>
+          )}
 
           {error && (
             <p className="text-sm text-red-600 text-center">{error}</p>

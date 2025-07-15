@@ -20,23 +20,28 @@ export default function LoginPageContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [role, setRole] = useState(params?.get("role") === "planner" ? "planner" : "attend");
+  const [redirectTo, setRedirectTo] = useState(params?.get("redirect") || "");
 
   useEffect(() => {
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session) {
         setSession(data.session);
-        // Redirect to appropriate dashboard based on user role
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", data.session.user.id)
-          .single();
-        
-        if (profile?.role === "planner") {
-          router.push("/planner");
+        // If there's a redirect URL, use it, otherwise redirect to appropriate dashboard
+        if (redirectTo) {
+          router.push(redirectTo);
         } else {
-          router.push("/attend");
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", data.session.user.id)
+            .single();
+          
+          if (profile?.role === "planner") {
+            router.push("/planner");
+          } else {
+            router.push("/attend");
+          }
         }
       }
     };
@@ -80,11 +85,15 @@ export default function LoginPageContent() {
           variant: "success",
         });
 
-        // Redirect based on role
-        if (profile?.role === "planner") {
-          router.push("/planner");
+        // If there's a redirect URL, use it, otherwise redirect based on role
+        if (redirectTo) {
+          router.push(redirectTo);
         } else {
-          router.push("/attend");
+          if (profile?.role === "planner") {
+            router.push("/planner");
+          } else {
+            router.push("/attend");
+          }
         }
       }
     } catch (err) {
@@ -100,10 +109,14 @@ export default function LoginPageContent() {
 
   const handleGoogleLogin = async () => {
     try {
+      const redirectUrl = redirectTo 
+        ? `https://plancer.vercel.app/login?redirect=${encodeURIComponent(redirectTo)}`
+        : `https://plancer.vercel.app/login`;
+        
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `https://plancer.vercel.app/login`,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
