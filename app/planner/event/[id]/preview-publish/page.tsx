@@ -45,7 +45,7 @@ export default function EventPreviewPage() {
     return <div className="text-red-500 p-10">Error loading event preview.</div>;
   }
 
-  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/attend/${event.invite_code || event.id}`;
+  const eventUrl = `https://plancer.vercel.app/attend/${event.invite_code || event.id}`;
 
   return (
     <>

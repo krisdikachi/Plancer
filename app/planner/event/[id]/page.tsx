@@ -21,7 +21,7 @@ const EventPreview = () => {
     return <div className="text-center p-10">No event to preview</div>;
   }
 
-  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/attend/${event.title.replace(/\s+/g, "-").toLowerCase()}`;
+  const eventUrl = `https://plancer.vercel.app/attend/${event.title.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -60,7 +60,7 @@ const EventPreview = () => {
 
               <Button
   onClick={() => {
-    const shareUrl = `${window.location.origin}/attend/${event.invite_code}`;
+    const shareUrl = `https://plancer.vercel.app/attend/${event.invite_code}`;
     if (navigator.share) {
       navigator.share({
         title: event.title,

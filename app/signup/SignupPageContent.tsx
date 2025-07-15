@@ -117,7 +117,7 @@ export default function SignupPageContent() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/signup?role=${role}`,
+          redirectTo: `https://plancer.vercel.app/signup?role=${role}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

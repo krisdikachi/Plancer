@@ -6,8 +6,8 @@
 
 **Transform your event planning experience with the smartest way to create, manage, and attend events**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Now-emerald?style=for-the-badge&logo=play&logoColor=white)](https://plancer.com)
-[![Get Started](https://img.shields.io/badge/Get%20Started-Sign%20Up%20Free-blue?style=for-the-badge&logo=rocket&logoColor=white)](https://plancer.com/signup)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Now-emerald?style=for-the-badge&logo=play&logoColor=white)](https://plancer.vercel.app)
+[![Get Started](https://img.shields.io/badge/Get%20Started-Sign%20Up%20Free-blue?style=for-the-badge&logo=rocket&logoColor=white)](https://plancer.vercel.app/signup)
 
 </div>
 
@@ -316,7 +316,7 @@ Once created, you'll get:
 
 ## **Ready to Transform Your Event Planning?**
 
-[![Get Started Now](https://img.shields.io/badge/Get%20Started%20Now-Sign%20Up%20Free-emerald?style=for-the-badge&logo=rocket&logoColor=white)](https://plancer.com/signup)
+[![Get Started Now](https://img.shields.io/badge/Get%20Started%20Now-Sign%20Up%20Free-emerald?style=for-the-badge&logo=rocket&logoColor=white)](https://plancer.vercel.app/signup)
 
 **Join thousands of event planners and attendees using plancer today!**
 
