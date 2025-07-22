@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import OneSignalProvider from "./OneSignalProvider";
 import { Toaster } from "@/components/ui/toaster";
-
+import PromoBanner from "@/components/PromoBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -171,6 +171,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <OneSignalProvider>
+          <PromoBanner />
           {children}
         </OneSignalProvider>
         <Toaster />
