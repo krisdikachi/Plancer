@@ -2,13 +2,27 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { to, subject, name, eventTitle } = body;
-
   try {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "Missing RESEND_API_KEY environment variable" },
+        { status: 500 }
+      );
+    }
+
+    const resend = new Resend(apiKey);
+    const body = await req.json();
+    const { to, subject, name, eventTitle } = body;
+
+    if (!to || !subject || !name || !eventTitle) {
+      return NextResponse.json(
+        { error: "Missing required fields: to, subject, name, or eventTitle" },
+        { status: 400 }
+      );
+    }
+
     const data = await resend.emails.send({
       from: "plancer <noreply@plancer.app>",
       to,
@@ -18,8 +32,15 @@ export async function POST(req: Request) {
              <p>Thanks for using plancer!</p>`
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, data });
   } catch (error) {
-    return NextResponse.json({ success: false, error });
+    console.error("Send email error:", error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      },
+      { status: 500 }
+    );
   }
 }

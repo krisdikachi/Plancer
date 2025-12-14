@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { Button } from "@/components/ui/button";
@@ -13,8 +15,8 @@ import {
 } from "lucide-react";
 
 export default function PlancerHeroWithRoadmap() {
-  const mountRef = useRef(null);
-  const animationRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
   const [activeStep, setActiveStep] = useState(0);
 
   // Roadmap steps for event creation
@@ -77,7 +79,9 @@ export default function PlancerHeroWithRoadmap() {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mountRef.current.appendChild(renderer.domElement);
+    if (mountRef.current && renderer.domElement) {
+      (mountRef.current as unknown as HTMLElement).appendChild(renderer.domElement);
+    }
 
     // Enhanced animation
     const animate = () => {
