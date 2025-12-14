@@ -152,7 +152,7 @@ return (
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Start free today and choose the billing model that works best for you
+              Start free today and choose the billing model that works best for you and your team
             </p>
           </div>
 
