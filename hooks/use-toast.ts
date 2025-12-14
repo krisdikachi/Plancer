@@ -189,3 +189,26 @@ function useToast() {
 }
 
 export { useToast, toast } 
+
+
+
+
+
+
+// kept hero stat
+//  <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
+//           <div className="flex gap-8 text-center">
+//             <div className="backdrop-blur-md bg-white/5 rounded-lg p-4 border border-white/10">
+//               <div className="text-2xl font-bold text-emerald-400">1000+</div>
+//               <div className="text-sm text-white/70">Events Planned</div>
+//             </div>
+//             <div className="backdrop-blur-md bg-white/5 rounded-lg p-4 border border-white/10">
+//               <div className="text-2xl font-bold text-emerald-400">98%</div>
+//               <div className="text-sm text-white/70">Success Rate</div>
+//             </div>
+//             <div className="backdrop-blur-md bg-white/5 rounded-lg p-4 border border-white/10">
+//               <div className="text-2xl font-bold text-emerald-400">24/7</div>
+//               <div className="text-sm text-white/70">Support</div>
+//             </div>
+//           </div>
+//         </div>

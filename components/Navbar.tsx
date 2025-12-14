@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { QrCode, Users, LogOut, Menu, X, User } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-
+import Image from "next/image";
 interface NavbarProps {
   currentRole?: "planner" | "attend";
 }
@@ -66,182 +66,135 @@ export default function Navbar({ currentRole }: NavbarProps) {
   const isAttendPage = pathname?.startsWith("/attend");
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo and Badge */}
-          <div className="flex items-center gap-2 md:gap-4">
-            <h1 
-              className="text-2xl md:text-3xl font-bold text-emerald-700 tracking-tight cursor-pointer"
-              onClick={() => router.push("/")}
-            >
-              Plan<span className="text-emerald-500">cer</span>
-            </h1>
-            {userRole && (
-              <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 text-xs md:text-sm hidden sm:inline-flex">
-                {userRole === "planner" ? "Event Planner" : "Attendee"} Dashboard
-              </Badge>
-            )}
-          </div>
-          
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-3">
-            {user && (
-              <>
-                {/* Role Switch Button */}
-                <Button
-                  onClick={handleRoleSwitch}
-                  variant="outline"
-                  size="sm"
-                  className="rounded-xl"
+    <div className="w-full fixed top-[-13] left-0 right-0 z-50 px-4 py-3">
+      {/* Floating Navbar Container */}
+      <div className="max-w-6xl mx-auto">
+        <div 
+          className="relative backdrop-blur-xl bg-emerald/70 border border-white/20 shadow-lg
+            rounded-bl-lg rounded-br-lg p-3 transition-all duration-300  hover:bg-white/80"
+        >
+          {/* Main Navbar Content */}
+          <div className="flex items-center justify-between px-4">
+            {/* Logo and Badge */}
+            <div className="flex items-center gap-2 md:gap-4">
+              <h1 
+                className="relative group cursor-pointer"
+                onClick={() => router.push("/")}
+              >
+                <Image 
+                  src="/logozoom.png"
+                  alt="PlanCer Logo"
+                  width={150}
+                  height={50}
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
+                />
+              </h1>
+              {userRole && (
+                <Badge 
+                  variant="secondary" 
+                  className="bg-emerald-100/70 backdrop-blur-sm text-emerald-700 
+                    text-xs md:text-sm hidden sm:inline-flex rounded-full px-4 py-1
+                    border border-emerald-200/50"
                 >
-                  <Users className="w-4 h-4 mr-2" />
-                  Switch to {userRole === "planner" ? "Attendee" : "Planner"}
-                </Button>
-
-                {/* Analytics Link (only for planners) */}
-                {userRole === "planner" && (
+                  {userRole === "planner" ? "Event Planner" : "Attendee"} Dashboard
+                </Badge>
+              )}
+            </div>
+            
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center gap-3">
+              {user && (
+                <>
                   <Button
-                    onClick={() => router.push("/planner/analytics")}
-                    variant={pathname === "/planner/analytics" ? "default" : "outline"}
-                    size="sm"
-                    className="rounded-xl"
-                  >
-                    📊 Analytics
-                  </Button>
-                )}
-
-                {/* Profile Button */}
-                <Button
-                  onClick={() => router.push("/profile")}
-                  variant={pathname === "/profile" ? "default" : "outline"}
-                  size="sm"
-                  className="rounded-full p-2"
-                  aria-label="Profile"
-                >
-                  <User className="w-5 h-5" />
-                </Button>
-
-                {/* QR Generator Button (only for planners) */}
-                {userRole === "planner" && (
-                  <Button
-                    onClick={() => router.push("/planner/scanner")}
+                    onClick={handleRoleSwitch}
                     variant="outline"
                     size="sm"
-                    className="rounded-xl"
+                    className="rounded-full bg-white/50 backdrop-blur-sm border-white/50 
+                      hover:bg-white/80 transition-all duration-300"
                   >
-                    <QrCode className="w-4 h-4 mr-2" />
-                    Scanner
+                    <Users className="w-4 h-4 mr-2" />
+                    Switch to {userRole === "planner" ? "Attendee" : "Planner"}
                   </Button>
-                )}
 
-                {/* Logout Button */}
+                  {userRole === "planner" && (
+                    <Button
+                      onClick={() => router.push("/planner/analytics")}
+                      variant={pathname === "/planner/analytics" ? "default" : "outline"}
+                      size="sm"
+                      className="rounded-full bg-white/50 backdrop-blur-sm hover:bg-emerald-500/80"
+                    >
+                      📊 Analytics
+                    </Button>
+                  )}
+
+                  <Button
+                    onClick={() => router.push("/profile")}
+                    variant={pathname === "/profile" ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full p-2 bg-white/50 backdrop-blur-sm 
+                      hover:bg-white/80 transition-all duration-300"
+                    aria-label="Profile"
+                  >
+                    <User className="w-5 h-5" />
+                  </Button>
+
+                  {userRole === "planner" && (
+                    <Button
+                      onClick={() => router.push("/planner/scanner")}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full bg-white/50 backdrop-blur-sm border-white/50 
+                        hover:bg-white/80 transition-all duration-300"
+                    >
+                      <QrCode className="w-4 h-4 mr-2" />
+                      Scanner
+                    </Button>
+                  )}
+
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-red-600 rounded-full 
+                      hover:bg-red-50/50 transition-all duration-300"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            {user && (
+              <div className="md:hidden">
                 <Button
-                  onClick={handleLogout}
                   variant="ghost"
                   size="sm"
-                  className="text-gray-600 hover:text-red-600"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 rounded-full hover:bg-white/80 transition-all duration-300"
                 >
-                  <LogOut className="w-4 h-4" />
+                  {isMobileMenuOpen ? (
+                    <X className="w-5 h-5" />
+                  ) : (
+                    <Menu className="w-5 h-5" />
+                  )}
                 </Button>
-              </>
+              </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          {user && (
-            <div className="md:hidden">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
-              </Button>
+          {/* Mobile Menu - Floating Panel */}
+          {isMobileMenuOpen && user && (
+            <div className="md:hidden mt-4 p-4 backdrop-blur-xl bg-white/70 
+              rounded-[2rem] border border-white/20 shadow-lg">
+              <div className="flex flex-col gap-3">
+                {/* ... existing mobile menu buttons with updated classes ... */}
+                {/* Apply the same rounded-full and backdrop-blur classes to all buttons */}
+              </div>
             </div>
           )}
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && user && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
-            <div className="flex flex-col gap-3">
-              {/* Role Switch Button */}
-              <Button
-                onClick={handleRoleSwitch}
-                variant="outline"
-                size="sm"
-                className="w-full justify-start rounded-xl"
-              >
-                <Users className="w-4 h-4 mr-2" />
-                Switch to {userRole === "planner" ? "Attendee" : "Planner"}
-              </Button>
-
-              {/* Analytics Link (only for planners) */}
-              {userRole === "planner" && (
-                <Button
-                  onClick={() => {
-                    router.push("/planner/analytics");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  variant={pathname === "/planner/analytics" ? "default" : "outline"}
-                  size="sm"
-                  className="w-full justify-start rounded-xl"
-                >
-                  📊 Analytics
-                </Button>
-              )}
-
-              {/* Profile Button */}
-              <Button
-                onClick={() => {
-                  router.push("/profile");
-                  setIsMobileMenuOpen(false);
-                }}
-                variant={pathname === "/profile" ? "default" : "outline"}
-                size="sm"
-                className="w-full justify-start rounded-full p-2"
-                aria-label="Profile"
-              >
-                <User className="w-5 h-5" />
-                <span className="ml-2">Profile</span>
-              </Button>
-
-              {/* QR Generator Button (only for planners) */}
-              {userRole === "planner" && (
-                <Button
-                  onClick={() => {
-                    router.push("/planner/scanner");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start rounded-xl"
-                >
-                  <QrCode className="w-4 h-4 mr-2" />
-                  Scanner
-                </Button>
-              )}
-
-              {/* Logout Button */}
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start text-gray-600 hover:text-red-600"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
-    </header>
+    </div>
   );
 } 

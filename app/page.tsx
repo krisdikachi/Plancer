@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -45,12 +45,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import Navbar from "@/components/Navbar";
+import Herosection from "@/components/Herosection";
 
 // Landing page for Plancer
 // Allows users to choose between being an event planner or attendee
 // Redirects to signup page with appropriate role query parameter
 // Uses Next.js routing and state management
-const LandingPage = () => {
+export default function LandingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -99,7 +101,7 @@ const LandingPage = () => {
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setWaitlistLoading(true);
-    
+
     try {
       // Send email to your address
       const response = await fetch('/api/waitlist', {
@@ -134,67 +136,16 @@ const LandingPage = () => {
     setWaitlistModalOpen(true);
     setWaitlistSuccess(false);
   };
-  
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-blue-400/20"></div>
-        <div className="container mx-auto px-4 py-20 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              <span>Revolutionary Event Planning Platform</span>
-            </div>
-            
-            {/* Limited Time Offer Banner */}
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-xl shadow-lg mb-8 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center gap-3">
-                <AlertTriangle className="w-5 h-5" />
-                <div>
-                  <p className="font-bold text-lg">🎉 FREE FOR LIMITED TIME!</p>
-                  <p className="text-sm opacity-90">Get full access until <span className="font-bold">August 18, 2025</span> - No credit card required</p>
-                </div>
-              </div>
-            </div>
-            
-            <h1 className="text-7xl font-bold text-gray-900 mb-6">
-              Plan<span className="text-emerald-600">cer</span>
-            </h1>
-            <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              The smart way to plan, manage, and attend events. From intimate gatherings to large-scale conferences, 
-              Plancer makes event management effortless and engaging.
-            </p>
-            <div className="flex items-center justify-center gap-6 text-sm text-gray-500 flex-wrap mb-8">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Smart Planning</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                <span>Easy Management</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <QrCode className="w-4 h-4" />
-                <span>Digital Invites</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
-                <span>Real-time Analytics</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
-                <span className="ml-2">4.9/5 from 2,500+ users</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
+
+
+return (
+  <>
+    <Navbar />
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50">
+
+      {/* The Herosection Area */}
+      <Herosection />
       {/* Pricing Section */}
       <div className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -204,7 +155,7 @@ const LandingPage = () => {
               Start free today and choose the billing model that works best for you
             </p>
           </div>
-          
+
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
             {/* Free Plan Card */}
             <Card className="border-2 border-emerald-200 relative overflow-hidden">
@@ -250,7 +201,7 @@ const LandingPage = () => {
                     <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                     <span>Email support</span>
                   </li>
-                 
+
                 </ul>
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-6">
                   <p className="text-orange-800 text-sm font-medium">
@@ -312,7 +263,7 @@ const LandingPage = () => {
                     <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
                     <span>Priority support & dedicated account manager</span>
                   </li>
-                  
+
                   <li className="flex items-center gap-3">
                     <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
                     <span>Advanced security & compliance</span>
@@ -321,7 +272,7 @@ const LandingPage = () => {
                     <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
                     <span>Team collaboration tools</span>
                   </li>
-                 
+
                 </ul>
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-6">
                   <p className="text-purple-800 text-sm font-medium">
@@ -339,7 +290,7 @@ const LandingPage = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           {/* Billing Options */}
           <div className="max-w-4xl mx-auto mt-12">
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8">
@@ -394,7 +345,7 @@ const LandingPage = () => {
                   </ul>
                 </div>
               </div>
-              
+
               {/* Event Access Policy */}
               <div className="mt-8 bg-white rounded-lg p-6 border border-gray-200">
                 <h4 className="text-lg font-semibold text-gray-900 mb-3">📋 Event Access Policy</h4>
@@ -421,7 +372,7 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Pricing Note */}
           <div className="text-center mt-8">
             <p className="text-gray-600 text-sm">
@@ -440,7 +391,7 @@ const LandingPage = () => {
               Whether you're planning events or attending them, Plancer streamlines the entire process
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-12 mb-20">
             {/* For Event Planners */}
             <div>
@@ -534,7 +485,7 @@ const LandingPage = () => {
               Powerful features designed to make event planning and attendance effortless
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="text-center">
@@ -611,29 +562,7 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-r from-emerald-600 to-blue-600">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Transform Your Events?</h2>
-          <p className="text-xl text-emerald-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of event planners and attendees who trust Plancer for their events
-          </p>
-          <div className="flex items-center justify-center gap-4 text-white mb-8">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              <span>10,000+ Events Created</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              <span>50,000+ Happy Users</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Award className="w-5 h-5" />
-              <span>99.9% Uptime</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    
 
       {/* Main Action Cards */}
       <div className="py-20 bg-gradient-to-br from-gray-50 to-emerald-50">
@@ -775,13 +704,13 @@ const LandingPage = () => {
               {waitlistSuccess ? "🎉 You're on the List!" : "Join the Pro Plan Waitlist"}
             </DialogTitle>
             <DialogDescription className="text-center">
-              {waitlistSuccess 
+              {waitlistSuccess
                 ? "We'll notify you as soon as the Pro plan launches with exclusive early access!"
                 : "Be the first to know when our Pro plan launches and get exclusive early access with 50% off for the first 6 months."
               }
             </DialogDescription>
           </DialogHeader>
-          
+
           {!waitlistSuccess ? (
             <form onSubmit={handleWaitlistSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -798,7 +727,7 @@ const LandingPage = () => {
                   className="w-full"
                 />
               </div>
-              
+
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
                 <p className="text-purple-800 text-sm">
                   <strong>Early Bird Perks:</strong>
@@ -810,7 +739,7 @@ const LandingPage = () => {
                   <li>• Dedicated onboarding support</li>
                 </ul>
               </div>
-              
+
               <Button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700"
@@ -842,7 +771,6 @@ const LandingPage = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
-
-export default LandingPage;
+  </>
+);
+}
